@@ -7,13 +7,16 @@ import { useRouter } from 'vue-router'
 const cookie = useCookies()
 const route = useRoute()
 const router = useRouter()
+
 const activeTab = ref(route.path)
+
 const tabList = ref([
     {
         title: '首页',
         path: '/',
     }
 ])
+// 监听路由变化
 onBeforeRouteUpdate((to, from) => {
     activeTab.value = to.path
     addTab({
@@ -22,19 +25,37 @@ onBeforeRouteUpdate((to, from) => {
     })
 })
 // 添加标签导航
-const addTab = (tab) => {
+function addTab(tab) {
     let noTab = tabList.value.findIndex(item => item.path === tab.path) === -1
     if (noTab) {
         tabList.value.push(tab)
     }
     cookie.set("tabList", tabList.value)
 }
-const removeTab = (targetName) => { }
+// 删除标签导航
+function removeTab(path) {
+    let index = tabList.value.findIndex(item => item.path === path)
+    if (index !== -1) {
+        tabList.value.splice(index, 1)
+    }
+    console.log(tabList.value)
+    cookie.set("tabList", tabList.value)
+}
 
-const changeTab = (path) => {
+// 切换标签导航
+function changeTab(path) {
     activeTab.value = path
     router.push(path)
 }
+
+// 初始化标签导航列表
+function initTabList() {
+    let tbs = cookie.get("tabList")
+    if (tbs) {
+        tabList.value = tbs
+    }
+}
+initTabList()
 </script>
 
 <template>
@@ -62,6 +83,7 @@ const changeTab = (path) => {
             </el-dropdown>
         </span>
     </div>
+    <div style="height: 44px;"></div>
 </template>
 
 <style scoped>
@@ -78,6 +100,7 @@ const changeTab = (path) => {
 }
 
 :deep(.el-tabs__header) {
+    border: 0 !important;
     @apply mb-0;
 }
 
