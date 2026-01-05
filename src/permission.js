@@ -3,6 +3,7 @@ import { getToken } from "@/composables/auth";
 import { toast, showLoading, hideLoading } from "@/composables/util";
 import store from "@/store";
 
+let hasGetInfo = false;
 router.beforeEach(async (to, from, next) => {
   let hasNewRoutes = false;
   // 显示全局loading
@@ -15,9 +16,10 @@ router.beforeEach(async (to, from, next) => {
   } else if (token && to.path === "/login") {
     toast("您已登录，无需重复登录", "warning");
     next({ path: from.path ? from.path : "/" });
-  } else if (token) {
+  } else if (token && !hasGetInfo) {
     // 如果登录了，获取用户信息存储到 vuex 中
     let { menus } = await store.dispatch("getInfo");
+    hasGetInfo = true;
     // 动态添加路由
     hasNewRoutes = addRoutes(menus);
   }

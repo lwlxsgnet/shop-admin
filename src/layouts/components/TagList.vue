@@ -1,71 +1,6 @@
 <script setup>
-import { ref } from 'vue'
-import { useRoute, onBeforeRouteUpdate } from 'vue-router'
-import { useCookies } from '@vueuse/integrations/useCookies'
-import { useRouter } from 'vue-router'
-
-const cookie = useCookies()
-const route = useRoute()
-const router = useRouter()
-
-const activeTab = ref(route.path)
-
-const tabList = ref([
-    {
-        title: '首页',
-        path: '/',
-    }
-])
-// 监听路由变化
-onBeforeRouteUpdate((to, from) => {
-    activeTab.value = to.path
-    addTab({
-        title: to.meta.title,
-        path: to.path,
-    })
-})
-// 添加标签导航
-function addTab(tab) {
-    let noTab = tabList.value.findIndex(item => item.path === tab.path) === -1
-    if (noTab) {
-        tabList.value.push(tab)
-    }
-    cookie.set("tabList", tabList.value)
-}
-// 删除标签导航
-function removeTab(path) {
-    let tbs = tabList.value
-    let currTab = activeTab.value
-    if (currTab === path) {
-        tbs.forEach((tab, index) => {
-            if (tab.path === path) {
-                const nextTab = tbs[index + 1] || tbs[index - 1]
-                if (nextTab) {
-                    currTab = nextTab.path
-                }
-            }
-        })
-    }
-    activeTab.value = currTab
-    tabList.value = tbs.filter(item => item.path !== path)
-    cookie.set("tabList", tabList.value)
-    router.push(currTab)
-}
-
-// 切换标签导航
-function changeTab(path) {
-    activeTab.value = path
-    router.push(path)
-}
-
-// 初始化标签导航列表
-function initTabList() {
-    let tbs = cookie.get("tabList")
-    if (tbs) {
-        tabList.value = tbs
-    }
-}
-initTabList()
+import { useTagList } from "@/composables/useTagList";
+const { activeTab, tabList, removeTab, changeTab, handleClose } = useTagList();
 </script>
 
 <template>
@@ -78,7 +13,7 @@ initTabList()
         </el-tabs>
 
         <span class="tag-btn">
-            <el-dropdown>
+            <el-dropdown @command="handleClose">
                 <span class="el-dropdown-link">
                     <el-icon>
                         <arrow-down />
@@ -86,8 +21,8 @@ initTabList()
                 </span>
                 <template #dropdown>
                     <el-dropdown-menu>
-                        <el-dropdown-item>close other</el-dropdown-item>
-                        <el-dropdown-item>close all</el-dropdown-item>
+                        <el-dropdown-item command="closeOther">close other</el-dropdown-item>
+                        <el-dropdown-item command="closeAll">close all</el-dropdown-item>
                     </el-dropdown-menu>
                 </template>
             </el-dropdown>
