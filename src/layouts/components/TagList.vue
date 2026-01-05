@@ -34,12 +34,22 @@ function addTab(tab) {
 }
 // 删除标签导航
 function removeTab(path) {
-    let index = tabList.value.findIndex(item => item.path === path)
-    if (index !== -1) {
-        tabList.value.splice(index, 1)
+    let tbs = tabList.value
+    let currTab = activeTab.value
+    if (currTab === path) {
+        tbs.forEach((tab, index) => {
+            if (tab.path === path) {
+                const nextTab = tbs[index + 1] || tbs[index - 1]
+                if (nextTab) {
+                    currTab = nextTab.path
+                }
+            }
+        })
     }
-    console.log(tabList.value)
+    activeTab.value = currTab
+    tabList.value = tbs.filter(item => item.path !== path)
     cookie.set("tabList", tabList.value)
+    router.push(currTab)
 }
 
 // 切换标签导航
