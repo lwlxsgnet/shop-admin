@@ -2,6 +2,7 @@
 import { getStatistics1 } from "@/api";
 import { ref } from "vue";
 import CountTo from "@/components/CountTo.vue";
+import IndexNav from "@/components/IndexNav.vue";
 
 const panels = ref([]);
 
@@ -56,6 +57,8 @@ getStatistics1().then(res => {
                 </el-card>
             </el-col>
         </el-row>
+
+        <IndexNav />
     </div>
 </template>
 
