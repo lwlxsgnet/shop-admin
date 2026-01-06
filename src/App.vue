@@ -5,7 +5,11 @@
 </template>
 
 
-<style scoped>
+<style>
+body {
+  @apply bg-gray-100;
+}
+
 /* 全局loading样式 */
 #nprogress .bar {
   background: #f4f4f4 !important;
