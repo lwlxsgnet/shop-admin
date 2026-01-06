@@ -3,6 +3,7 @@ import { getStatistics1 } from "@/api";
 import { ref } from "vue";
 import CountTo from "@/components/CountTo.vue";
 import IndexNav from "@/components/IndexNav.vue";
+import IndexChart from "@/components/IndexChart.vue";
 
 const panels = ref([]);
 
@@ -43,7 +44,8 @@ getStatistics1().then(res => {
                     <template #header>
                         <div class="flex justify-between">
                             <span class="text-sm">{{ item.title }}</span>
-                            <el-tag :type="item.unitColor" effect="plain">{{ item.unit }}</el-tag>
+                            <el-tag :type="item.unitColor ? item.unitColor : 'primary'" effect="plain">{{ item.unit
+                                }}</el-tag>
                         </div>
                     </template>
                     <span class="text-3xl font-bold text-gray-500">
@@ -59,6 +61,14 @@ getStatistics1().then(res => {
         </el-row>
 
         <IndexNav />
+
+        <el-row :gutter="20" class="mt-5">
+            <el-col :span="12" :offset="0">
+                <IndexChart />
+            </el-col>
+            <el-col :span="12" :offset="0">
+            </el-col>
+        </el-row>
     </div>
 </template>
 

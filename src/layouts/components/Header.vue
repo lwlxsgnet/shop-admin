@@ -4,7 +4,7 @@
             <el-icon class="mr-1">
                 <Shop />
             </el-icon>
-            shop admin 
+            shop admin
         </span>
         <el-icon class="icon-btn" @click="$store.commit('hideAsideWidth')">
             <Fold v-if="$store.state.asideWidth === '250px'" />
@@ -81,6 +81,8 @@ const handleRefresh = () => location.reload()
 .header {
     @apply flex items-center bg-indigo-700 text-light-50 fixed top-0 left-0 right-0;
     height: 64px;
+    z-index: 1000;
+    /* 确保 header 位于其他内容之上 */
 }
 
 .logo {
