@@ -37,6 +37,7 @@ const { activeTab, tabList, removeTab, changeTab, handleClose } = useTagList();
     top: 64px;
     right: 0;
     height: 44px;
+    z-index: 1000;
 }
 
 .tag-btn {

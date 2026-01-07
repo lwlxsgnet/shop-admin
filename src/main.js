@@ -8,13 +8,15 @@ import { router } from "@/router";
 import store from "@/store";
 import "@/permission";
 import "nprogress/nprogress.css";
-import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+import * as ElementPlusIconsVue from "@element-plus/icons-vue";
+import permission from "@/directives/permission";
 
 const app = createApp(App);
+app.use(permission);
 
 for (const iconName in ElementPlusIconsVue) {
-    app.component(iconName, ElementPlusIconsVue[iconName])
-  }
+  app.component(iconName, ElementPlusIconsVue[iconName]);
+}
 app.use(router);
 app.use(ElementPlus);
 app.use(store);
