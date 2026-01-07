@@ -117,7 +117,7 @@ export function addRoutes(menus) {
   const findOrCreateRoutesByMenus = (arr) => {
     arr.forEach((e) => {
       let item = dynamicRoutes.find((o) => o.path === e.frontpath);
-      if (item && !router.hasRoute(item.path)) {
+      if (item && !router.hasRoute(item.name)) {
         router.addRoute("admin", item);
         hasNewRoutes = true;
       }
