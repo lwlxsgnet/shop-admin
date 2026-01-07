@@ -29,6 +29,7 @@ const handleChoose = (type) => {
 var myChart = null;
 onMounted(() => {
     var chartDom = document.getElementById('chart');
+    if (!chartDom) return;
     myChart = echarts.init(chartDom);
     getChartData()
 })
@@ -66,7 +67,10 @@ function getChartData() {
 
 // 图表宽度自适应
 const el = ref(null)
-useResizeObserver(el, (entries) => myChart.resize())
+// 组件无权限被移除后，图表宽度自适应失效
+if (el.value) {
+    useResizeObserver(el, (entries) => myChart.resize())
+}
 </script>
 
 <template>

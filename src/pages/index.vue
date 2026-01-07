@@ -22,7 +22,7 @@ getStatistics2().then(res => {
 
 <template>
     <div>
-        <el-row :gutter="20">
+        <el-row :gutter="20" v-permission="['getStatistics1,GET']">
             <!-- 骨架屏 -->
             <template v-if="panels.length === 0">
                 <el-col :span="6" v-for="i in 4" :key="i">
@@ -53,7 +53,7 @@ getStatistics2().then(res => {
                         <div class="flex justify-between">
                             <span class="text-sm">{{ item.title }}</span>
                             <el-tag :type="item.unitColor ? item.unitColor : 'primary'" effect="plain">{{ item.unit
-                            }}</el-tag>
+                                }}</el-tag>
                         </div>
                     </template>
                     <span class="text-3xl font-bold text-gray-500">
@@ -72,9 +72,9 @@ getStatistics2().then(res => {
 
         <el-row :gutter="20" class="mt-5">
             <el-col :span="12" :offset="0">
-                <IndexChart />
+                <IndexChart v-permission="['getStatistics3,GET']" />
             </el-col>
-            <el-col :span="12" :offset="0">
+            <el-col :span="12" :offset="0" v-permission="['getStatistics2,GET']">
                 <IndexCard title="店铺及商品提示" tip="店铺及商品提示" :dynamicList="goods" class="mb-5" />
                 <IndexCard title="交易提示" tip="需要立即处理的交易订单" :dynamicList="order" />
             </el-col>
