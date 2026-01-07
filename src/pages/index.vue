@@ -1,14 +1,22 @@
 <script setup>
-import { getStatistics1 } from "@/api";
+import { getStatistics1, getStatistics2 } from "@/api";
 import { ref } from "vue";
 import CountTo from "@/components/CountTo.vue";
 import IndexNav from "@/components/IndexNav.vue";
 import IndexChart from "@/components/IndexChart.vue";
+import IndexCard from "@/components/IndexCard.vue";
 
 const panels = ref([]);
+const goods = ref([])
+const order = ref([])
 
 getStatistics1().then(res => {
     panels.value = res.panels
+})
+
+getStatistics2().then(res => {
+    goods.value = res.goods
+    order.value = res.order
 })
 </script>
 
@@ -45,7 +53,7 @@ getStatistics1().then(res => {
                         <div class="flex justify-between">
                             <span class="text-sm">{{ item.title }}</span>
                             <el-tag :type="item.unitColor ? item.unitColor : 'primary'" effect="plain">{{ item.unit
-                                }}</el-tag>
+                            }}</el-tag>
                         </div>
                     </template>
                     <span class="text-3xl font-bold text-gray-500">
@@ -67,6 +75,8 @@ getStatistics1().then(res => {
                 <IndexChart />
             </el-col>
             <el-col :span="12" :offset="0">
+                <IndexCard title="店铺及商品提示" tip="店铺及商品提示" :dynamicList="goods" class="mb-5" />
+                <IndexCard title="交易提示" tip="需要立即处理的交易订单" :dynamicList="order" />
             </el-col>
         </el-row>
     </div>
