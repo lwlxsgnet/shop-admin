@@ -8,7 +8,7 @@ const height = windowHeight - 64 - 44 - 40;
 
 // 点击新增图片分类按钮, 打开新增图片分类抽屉
 const imageAsideRef = ref(null);
-const handleOpen = () => imageAsideRef.value.open();
+const handleOpen = () => imageAsideRef.value.openDrawer();
 </script>
 <template>
     <el-container class="bg-white rounded" :style="{ height: height + 'px' }">
