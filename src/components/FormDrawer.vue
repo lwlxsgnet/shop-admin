@@ -14,7 +14,6 @@ defineExpose({ open, close, showLoading, hideLoading })
 const emit = defineEmits(["submit"])
 const submit = () => emit("submit")
 
-// 获取子组件变量
 const props = defineProps({
     title: String,
     size: {
