@@ -11,6 +11,13 @@ const imageList = ref([]);
 const activeId = ref(0);
 const formDrawerRef = ref(null);
 const formRef = ref(null);
+
+// 分页
+const currentPage = ref(1);
+const total = ref(0);
+const limit = ref(10);
+
+// 提交
 const editId = ref(0)
 const title = computed(() => editId.value ? '更新相册' : '新增相册');
 
@@ -22,9 +29,14 @@ const rules = {
     name: [{ required: true, message: '请输入相册名称', trigger: 'blur' }],
 };
 
-function getData(page) {
+function getData(page = null) {
+    // 如果传入了页码，更新当前页码
+    if (typeof page === 'number') {
+        currentPage.value = page;
+    }
     loading.value = true;
-    getImageList(page).then(res => {
+    getImageList(currentPage.value).then(res => {
+        total.value = res.totalCount;
         imageList.value = res.list;
         let item = imageList.value[0];
         if (item) {
@@ -34,7 +46,7 @@ function getData(page) {
         loading.value = false;
     })
 }
-getData(1);
+getData();
 
 const handleSubmit = () => {
     formRef.value.validate(valid => {
@@ -44,7 +56,7 @@ const handleSubmit = () => {
         const fun = isEdit ? updateImageList(editId.value, form) : addImageList(form);
         fun.then(() => {
             toast(isEdit ? '更新成功' : '新增成功');
-            getData(1);
+            if (isEdit) { getData() } else { getData(1); }
             formDrawerRef.value.close();
             // 重置编辑ID，避免下次提交时误判
             editId.value = 0;
@@ -76,7 +88,7 @@ const handleDelete = (id) => {
     loading.value = true;
     deleteImageList(id).then(() => {
         toast('删除成功');
-        getData(1);
+        getData();
     }).finally(() => {
         loading.value = false;
     })
@@ -91,7 +103,10 @@ const handleDelete = (id) => {
                 {{ item.name }}
             </AsideList>
         </div>
-        <div class="bottom">page</div>
+        <div class="bottom">
+            <el-pagination background layout="prev, next" :total="total" v-model:current-page="currentPage"
+                :page-size="limit" @current-change="getData" />
+        </div>
     </el-aside>
 
     <FormDrawer ref="formDrawerRef" :title="title" @submit="handleSubmit">
