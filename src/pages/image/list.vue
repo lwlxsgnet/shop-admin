@@ -9,6 +9,11 @@ const height = windowHeight - 64 - 44 - 40;
 // 点击新增图片分类按钮, 打开新增图片分类抽屉
 const imageAsideRef = ref(null);
 const handleOpen = () => imageAsideRef.value.openDrawer();
+
+const imageMainRef = ref(null);
+const handleSwitchActiveId = (image_class_id) => {
+    imageMainRef.value.loadData(image_class_id);
+}
 </script>
 <template>
     <el-container class="bg-white rounded" :style="{ height: height + 'px' }">
@@ -17,8 +22,8 @@ const handleOpen = () => imageAsideRef.value.openDrawer();
             <el-button type="warning" size="small">上传图片</el-button>
         </el-header>
         <el-container>
-            <ImageAside ref="imageAsideRef" />
-            <ImageMain />
+            <ImageAside ref="imageAsideRef" @switch="handleSwitchActiveId" />
+            <ImageMain ref="imageMainRef" />
         </el-container>
     </el-container>
 </template>

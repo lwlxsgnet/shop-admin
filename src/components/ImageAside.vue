@@ -8,7 +8,6 @@ import { toast } from "@/composables/util.js";
 // loading animation
 const loading = ref(false);
 const imageList = ref([]);
-const activeId = ref(0);
 const formDrawerRef = ref(null);
 const formRef = ref(null);
 
@@ -20,6 +19,15 @@ const limit = ref(10);
 // 提交
 const editId = ref(0)
 const title = computed(() => editId.value ? '更新相册' : '新增相册');
+
+// 获取分类 id
+const activeId = ref(0);
+// 切换分类时, aside 通知父组件出发 main 查询
+const emit = defineEmits(['switch'])
+function switchActiveId(id) {
+    activeId.value = id;
+    emit('switch', id)
+}
 
 const form = reactive({
     name: '',
@@ -38,15 +46,24 @@ function getData(page = null) {
     getImageList(currentPage.value).then(res => {
         total.value = res.totalCount;
         imageList.value = res.list;
+        // 初始化时, 切换到第一个分类
         let item = imageList.value[0];
         if (item) {
-            activeId.value = item.id;
+            switchActiveId(item.id);
         }
     }).finally(() => {
         loading.value = false;
     })
 }
 getData();
+
+const openDrawer = () => {
+    editId.value = 0;
+    // 新增时, 清空表单数据
+    form.name = '';
+    form.order = 50;
+    formDrawerRef.value.open();
+}
 
 const handleSubmit = () => {
     formRef.value.validate(valid => {
@@ -66,13 +83,6 @@ const handleSubmit = () => {
     })
 }
 
-const openDrawer = () => {
-    editId.value = 0;
-    // 新增时, 清空表单数据
-    form.name = '';
-    form.order = 50;
-    formDrawerRef.value.open();
-}
 // 暴露 open 方法, 用于 list 组件调用
 defineExpose({ openDrawer });
 
@@ -83,7 +93,7 @@ const handleEdit = (row) => {
     form.order = row.order;
     formDrawerRef.value.open();
 }
-
+// 处理 AsideList 组件的事件
 const handleDelete = (id) => {
     loading.value = true;
     deleteImageList(id).then(() => {
@@ -99,7 +109,7 @@ const handleDelete = (id) => {
     <el-aside class="image-aside" width="220px" v-loading="loading">
         <div class="top">
             <AsideList :active="item.id === activeId" v-for="(item, index) in imageList" :key="index"
-                @edit="handleEdit(item)" @delete="handleDelete(item.id)">
+                @edit="handleEdit(item)" @delete="handleDelete(item.id)" @click="switchActiveId(item.id)">
                 {{ item.name }}
             </AsideList>
         </div>
