@@ -11,3 +11,6 @@ export function renameImage(id, name) {
 export function deleteImage(ids) {
   return request.post(`/admin/image/delete_all`, { ids });
 }
+
+
+export const uploadImageAction = "/api/admin/image/upload";

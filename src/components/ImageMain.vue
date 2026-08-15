@@ -2,6 +2,11 @@
 import { getImageById, renameImage, deleteImage } from "@/api/photo";
 import { ref } from "vue";
 import { showPrompt, toast } from "@/composables/util";
+import UploadFile from "@/components/UploadFile.vue"
+
+// 上传图片
+const drawer = ref(false)
+const openUploadFile = () => drawer.value = true
 
 // 分页
 const currentPage = ref(1);
@@ -60,8 +65,11 @@ const handleDelete = (id) => {
     })
 }
 
+// 上传成功
+const handleUploadSuccess = () => getData();
+
 // 将 loadData 传回父组件
-defineExpose({ loadData })
+defineExpose({ loadData, openUploadFile })
 </script>
 
 <template>
@@ -71,19 +79,15 @@ defineExpose({ loadData })
             <el-row :gutter="10">
                 <el-col :span="6" :offset="0" v-for="(item, index) in images" :key="index">
                     <el-card shadow="hover" class="relative mb-3" :body-style="{ 'padding': 0 }">
-                        <el-image :src="item.url" fit="cover" class="h-[150px]" 
-                            style="width: 100%;" 
-                            :preview-src-list="[item.url]" 
-                            :initial-index="0">
+                        <el-image :src="item.url" fit="cover" class="h-[150px]" style="width: 100%;"
+                            :preview-src-list="[item.url]" :initial-index="0">
                         </el-image>
                         <div class="image-title">{{ item.name }}</div>
                         <div class="flex items-center justify-center p-2">
                             <el-button type="primary" size="small" text @click="handleRename(item)">
                                 重命名
                             </el-button>
-                            <el-popconfirm title="是否要删除该图片？" 
-                                confirmButtonText="确认" 
-                                cancelButtonText="取消"
+                            <el-popconfirm title="是否要删除该图片？" confirmButtonText="确认" cancelButtonText="取消"
                                 @confirm="handleDelete(item.id)">
                                 <template #reference>
                                     <el-button type="primary" size="small" text>删除</el-button>
@@ -99,6 +103,9 @@ defineExpose({ loadData })
                 :page-size="limit" @current-change="getData" />
         </div>
     </el-main>
+    <el-drawer v-model="drawer" title="上传图片">
+        <UploadFile :data="{ image_class_id }" @success="handleUploadSuccess"/>
+    </el-drawer>
 </template>
 <style scoped>
 .image-main {
@@ -122,6 +129,7 @@ defineExpose({ loadData })
     height: 50px;
     @apply flex items-center justify-center;
 }
+
 .image-title {
     position: absolute;
     top: 122px;

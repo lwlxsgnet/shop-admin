@@ -14,12 +14,15 @@ const imageMainRef = ref(null);
 const handleSwitchActiveId = (image_class_id) => {
     imageMainRef.value.loadData(image_class_id);
 }
+
+// 上传图片弹出框
+const handleOpenUpload = () => imageMainRef.value.openUploadFile();
 </script>
 <template>
     <el-container class="bg-white rounded" :style="{ height: height + 'px' }">
         <el-header class="image-header">
             <el-button type="primary" size="small" @click="handleOpen">新增图片分类</el-button>
-            <el-button type="warning" size="small">上传图片</el-button>
+            <el-button type="warning" size="small" @click="handleOpenUpload">上传图片</el-button>
         </el-header>
         <el-container>
             <ImageAside ref="imageAsideRef" @switch="handleSwitchActiveId" />
