@@ -14,12 +14,12 @@ defineEmits(['edit', 'delete'])
         <span class="truncate">
             <slot />
         </span>
-        <el-button class="ml-auto px-1" text type="primary" size="small" @click="$emit('edit')">
+        <el-button class="ml-auto px-1" text type="primary" size="small" @click.stop="$emit('edit')">
             <el-icon :size="12">
                 <Edit />
             </el-icon>
         </el-button>
-        <el-popconfirm title="确认删除吗？" confirmButtonText="确定" cancelButtonText="取消" @confirm="$emit('delete')">
+        <el-popconfirm title="确认删除吗？" confirmButtonText="确定" cancelButtonText="取消" @confirm.stop="$emit('delete')">
             <template #reference>
                 <el-button class="px-1" text type="primary" size="small">
                     <el-icon :size="12">
