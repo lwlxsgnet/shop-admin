@@ -21,8 +21,8 @@ const { activeTab, tabList, removeTab, changeTab, handleClose } = useTagList();
                 </span>
                 <template #dropdown>
                     <el-dropdown-menu>
-                        <el-dropdown-item command="closeOther">close other</el-dropdown-item>
-                        <el-dropdown-item command="closeAll">close all</el-dropdown-item>
+                        <el-dropdown-item command="closeOther">关闭其他</el-dropdown-item>
+                        <el-dropdown-item command="closeAll">关闭所有</el-dropdown-item>
                     </el-dropdown-menu>
                 </template>
             </el-dropdown>
