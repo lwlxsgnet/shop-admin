@@ -22,7 +22,7 @@ const title = computed(() => editId.value ? '更新相册' : '新增相册');
 
 // 获取分类 id
 const activeId = ref(0);
-// 切换分类时, aside 通知父组件出发 main 查询
+// 切换分类时, aside 通知父组件触发 main 查询
 const emit = defineEmits(['switch'])
 function switchActiveId(id) {
     activeId.value = id;

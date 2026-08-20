@@ -1,6 +1,12 @@
 <script setup>
-import { getImageById } from "@/api/photo";
+import { getImageById, renameImage, deleteImage } from "@/api/photo";
 import { ref } from "vue";
+import { showPrompt, toast } from "@/composables/util";
+import UploadFile from "@/components/UploadFile.vue"
+
+// 上传图片
+const drawer = ref(false)
+const openUploadFile = () => drawer.value = true
 
 // 分页
 const currentPage = ref(1);
@@ -18,7 +24,7 @@ function getData(page = null) {
         currentPage.value = page;
     }
     loading.value = true;
-    console.log(image_class_id.value);
+    // console.log(image_class_id.value);
     getImageById(image_class_id.value, currentPage.value).then(res => {
         total.value = res.totalCount;
         images.value = res.list;
@@ -33,19 +39,73 @@ const loadData = (id) => {
     image_class_id.value = id;
     getData();
 }
-defineExpose({ loadData })
+
+// 重命名图片名称
+const handleRename = (item) => {
+    showPrompt("重命名", item.name).then(({ value }) => { // 解构出输入框的值
+        // console.log(res); res 是输入后的值
+        loading.value = true;
+        renameImage(item.id, value).then(res => {
+            toast("重命名成功");
+            getData();
+        }).finally(() => {
+            loading.value = false;
+        });
+    });
+}
+
+// 删除图片
+const handleDelete = (id) => {
+    loading.value = true;
+    deleteImage([id]).then(res => {
+        toast("删除成功");
+        getData();
+    }).finally(() => {
+        loading.value = false;
+    })
+}
+
+// 上传成功
+const handleUploadSuccess = () => getData();
+
+// 将 loadData 传回父组件
+defineExpose({ loadData, openUploadFile })
 </script>
 
 <template>
-    <el-main class="image-main" v-loading="">
-        <div class="top">
-            <div v-for="(item, index) in images" :key="index">{{ item.url }}</div>
+    <el-main class="image-main" v-loading="loading">
+        <div class="top p-3">
+            <!-- <div v-for="(item, index) in images" :key="index">{{ item.url }}</div> -->
+            <el-row :gutter="10">
+                <el-col :span="6" :offset="0" v-for="(item, index) in images" :key="index">
+                    <el-card shadow="hover" class="relative mb-3" :body-style="{ 'padding': 0 }">
+                        <el-image :src="item.url" fit="cover" class="h-[150px]" style="width: 100%;"
+                            :preview-src-list="[item.url]" :initial-index="0">
+                        </el-image>
+                        <div class="image-title">{{ item.name }}</div>
+                        <div class="flex items-center justify-center p-2">
+                            <el-button type="primary" size="small" text @click="handleRename(item)">
+                                重命名
+                            </el-button>
+                            <el-popconfirm title="是否要删除该图片？" confirmButtonText="确认" cancelButtonText="取消"
+                                @confirm="handleDelete(item.id)">
+                                <template #reference>
+                                    <el-button type="primary" size="small" text>删除</el-button>
+                                </template>
+                            </el-popconfirm>
+                        </div>
+                    </el-card>
+                </el-col>
+            </el-row>
         </div>
         <div class="bottom">
             <el-pagination background layout="prev, pager, next" :total="total" v-model:current-page="currentPage"
                 :page-size="limit" @current-change="getData" />
         </div>
     </el-main>
+    <el-drawer v-model="drawer" title="上传图片">
+        <UploadFile :data="{ image_class_id }" @success="handleUploadSuccess"/>
+    </el-drawer>
 </template>
 <style scoped>
 .image-main {
@@ -68,5 +128,13 @@ defineExpose({ loadData })
     left: 0;
     height: 50px;
     @apply flex items-center justify-center;
+}
+
+.image-title {
+    position: absolute;
+    top: 122px;
+    left: -1px;
+    right: -1px;
+    @apply text-sm truncate text-gray-100 bg-opacity-50 bg-gray-800 px-2 py-1;
 }
 </style>
